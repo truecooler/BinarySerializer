@@ -103,16 +103,7 @@ namespace BinarySerialization.Graph.ValueGraph
             {
                 GenerateChildren();
                 ThrowIfUnordered();
-
-                try
-                {
-                    ObjectDeserializeOverride(stream, eventShuttle);
-                }
-                catch (EndOfStreamException)
-                {
-                    // this is ok but we can't consider this object fully formed.
-                    _valueType = null;
-                }
+				ObjectDeserializeOverride(stream, eventShuttle);
             }
 
             SkipPadding(stream);

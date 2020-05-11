@@ -175,7 +175,7 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = InputStream.Read(data, length);
 
-            if (readLength == 0)
+            if (readLength < fieldLength)
             {
                 throw new EndOfStreamException();
             }
@@ -186,7 +186,7 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = await InputStream.ReadAsync(data, length, cancellationToken);
 
-            if (readLength == 0)
+            if (readLength < fieldLength)
             {
                 throw new EndOfStreamException();
             }
