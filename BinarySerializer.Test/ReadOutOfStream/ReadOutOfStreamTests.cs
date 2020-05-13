@@ -8,17 +8,15 @@ namespace BinarySerialization.Test.ReadOutOfStream
 {
 	public class ReadOutOfStreamTests
 	{
-		private BinarySerializer _serializer = new BinarySerializer();
+		private BinarySerializer _serializer;
 
 		private MemoryStream _memoryStream;
 
-		private BinaryWriter _binaryWriter;
-
 		public ReadOutOfStreamTests()
 		{
-			_memoryStream = new MemoryStream();
+			_serializer = new BinarySerializer();
 
-			_binaryWriter = new BinaryWriter(_memoryStream);
+			_memoryStream = new MemoryStream();
 		}
 
 		[Fact]
@@ -30,7 +28,7 @@ namespace BinarySerialization.Test.ReadOutOfStream
 		[Fact]
 		public void DeserializeIntFromShortStream_ShouldThrowEndOfStreamException()
 		{
-			_binaryWriter.Write(short.MaxValue);
+			_serializer.Serialize(_memoryStream, short.MaxValue);
 			_memoryStream.Position = 0;
 			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<int>(_memoryStream));
 		}
@@ -38,7 +36,35 @@ namespace BinarySerialization.Test.ReadOutOfStream
 		[Fact]
 		public void DeserializeCustomClassFromEmptryStream_ShouldThrowEndOfStreamException()
 		{
-			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomClass>(_memoryStream));
+			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomSizedStringClass>(_memoryStream));
+		}
+
+		[Fact]
+		public void DeserializeSizedStringFromTruncatedStream_ShouldThrowEndOfStreamException()
+		{
+			var obj = new CustomSizedStringClass() { String = "123456" };
+
+			_serializer.Serialize(_memoryStream, obj);
+
+			_memoryStream.TruncateEnd(2);
+
+			_memoryStream.Position = 0;
+
+			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomSizedStringClass>(_memoryStream));
+		}
+
+		[Fact]
+		public void DeserializeSizedByteArrayFromTruncatedStream_ShouldThrowEndOfStreamException()
+		{
+			var obj = new CustomSizedByteArrayClass() { Array = new byte[] { 0xFF, 0xFF, 0xFF } };
+
+			_serializer.Serialize(_memoryStream, obj);
+
+			_memoryStream.TruncateEnd(1);
+
+			_memoryStream.Position = 0;
+
+			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomSizedByteArrayClass>(_memoryStream));
 		}
 	}
 }

@@ -459,8 +459,10 @@ namespace BinarySerialization.Graph.ValueGraph
                     break;
                 case SerializedType.ByteArray:
                 {
-                    value = reader.ReadBytes((int) effectiveLengthValue.ByteCount);
-                    break;
+                    var bytes = reader.ReadBytes((int) effectiveLengthValue.ByteCount);
+					EnsureByteArrayReadCompletely(bytes, effectiveLengthValue.ByteCount);
+					value = bytes;
+					break;
                 }
                 case SerializedType.TerminatedString:
                 {
@@ -469,12 +471,12 @@ namespace BinarySerialization.Graph.ValueGraph
                     break;
                 }
                 case SerializedType.SizedString:
-                {
-                    var data = reader.ReadBytes((int) effectiveLengthValue.ByteCount);
-                    value = GetString(data);
-
-                    break;
-                }
+				{
+					var data = reader.ReadBytes((int)effectiveLengthValue.ByteCount);
+					EnsureByteArrayReadCompletely(data, effectiveLengthValue.ByteCount);
+					value = GetString(data);
+					break;
+				}
                 case SerializedType.LengthPrefixedString:
                 {
                     value = reader.ReadString();
@@ -632,6 +634,14 @@ namespace BinarySerialization.Graph.ValueGraph
             var boundValue = BoundValue as byte[];
             return boundValue?.Length ?? base.MeasureOverride();
         }
+
+		private void EnsureByteArrayReadCompletely(byte[] byteArray, long expectedByteArrayLength)
+		{
+			if (byteArray.Length < expectedByteArrayLength)
+			{
+				throw new EndOfStreamException();
+			}
+		}
 
         private object ScaleValue(object value)
         {

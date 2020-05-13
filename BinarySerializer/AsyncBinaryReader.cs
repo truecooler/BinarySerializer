@@ -170,7 +170,15 @@ namespace BinarySerialization
             return BitConverter.ToDouble(b, 0);
         }
 
-        public void Read(byte[] data, FieldLength fieldLength)
+		public async Task<byte[]> ReadBytesAsync(int count, CancellationToken cancellationToken)
+		{
+			var b = new byte[count];
+			await BaseStream.ReadAsync(b, 0, b.Length, cancellationToken)
+				.ConfigureAwait(false);
+			return b;
+		}
+
+		private void Read(byte[] data, FieldLength fieldLength)
         {
             var length = fieldLength ?? data.Length;
             var readLength = InputStream.Read(data, length);
@@ -181,7 +189,7 @@ namespace BinarySerialization
             }
         }
 
-        public async Task ReadAsync(byte[] data, FieldLength fieldLength, CancellationToken cancellationToken)
+        private async Task ReadAsync(byte[] data, FieldLength fieldLength, CancellationToken cancellationToken)
         {
             var length = fieldLength ?? data.Length;
             var readLength = await InputStream.ReadAsync(data, length, cancellationToken);
@@ -190,14 +198,6 @@ namespace BinarySerialization
             {
                 throw new EndOfStreamException();
             }
-        }
-
-        public async Task<byte[]> ReadBytesAsync(int count, CancellationToken cancellationToken)
-        {
-            var b = new byte[count];
-            await BaseStream.ReadAsync(b, 0, b.Length, cancellationToken)
-                .ConfigureAwait(false);
-            return b;
         }
     }
 }
