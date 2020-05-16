@@ -101,7 +101,7 @@ namespace BinarySerialization
             {
                 if (MaxLength != null)
                 {
-                    return Position >= MaxLength;
+                    return RelativePosition >= MaxLength;
                 }
 
                 return Source is BoundedStream source && source.IsAtLimit;
@@ -130,10 +130,10 @@ namespace BinarySerialization
 
                 if (!_canSeek)
                 {
-                    return maxLength - Position;
+                    return maxLength - RelativePosition;
                 }
 
-                return FieldLength.Min(maxLength, Length) - Position;
+                return FieldLength.Min(maxLength, Length) - RelativePosition;
             }
         }
 
@@ -143,7 +143,7 @@ namespace BinarySerialization
             {
                 if (MaxLength != null)
                 {
-                    return MaxLength - Position;
+                    return MaxLength - RelativePosition;
                 }
 
                 var source = Source as BoundedStream;
@@ -217,7 +217,7 @@ namespace BinarySerialization
         /// </returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return (int) ReadImpl(buffer, count).ByteCount;
+            return (int) ReadImpl(buffer, count).TotalByteCount;
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace BinarySerialization
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void WriteCheck(FieldLength length)
         {
-            if (MaxLength != null && length > MaxLength - Position)
+            if (MaxLength != null && length > MaxLength - RelativePosition)
             {
                 throw new InvalidOperationException("Unable to write beyond end of stream limit.");
             }
@@ -436,7 +436,7 @@ namespace BinarySerialization
         {
             var read = await ReadAsyncImpl(buffer, count, cancellationToken)
                 .ConfigureAwait(false);
-            return (int) read.ByteCount;
+            return (int) read.TotalByteCount;
         }
 
         public FieldLength Read(byte[] buffer, FieldLength length)
@@ -638,9 +638,9 @@ namespace BinarySerialization
 
         private FieldLength ClampLength(FieldLength length)
         {
-            if (MaxLength != null && length > MaxLength - Position)
+            if (MaxLength != null && length > MaxLength - RelativePosition)
             {
-                length = FieldLength.Max(FieldLength.Zero, MaxLength - Position);
+                length = FieldLength.Max(FieldLength.Zero, MaxLength - RelativePosition);
             }
 
             return length;

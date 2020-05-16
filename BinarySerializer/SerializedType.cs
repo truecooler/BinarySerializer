@@ -71,6 +71,8 @@ namespace BinarySerialization
         /// </summary>
         ByteArray,
 
+		BitArray,
+
         /// <summary>
         ///     A fixed-size string with a length specified by <see cref="FieldLengthAttribute" />.
         /// </summary>

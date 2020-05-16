@@ -183,8 +183,12 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = InputStream.Read(data, length);
 
-            if (readLength < fieldLength)
+            if (readLength.TotalByteCount < fieldLength.TotalByteCount)
             {
+				if (InputStream.IsAtLimit)
+				{
+					throw new EndOfStreamException("BoundedStream Limit reached");
+				}
                 throw new EndOfStreamException();
             }
         }
@@ -194,10 +198,14 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = await InputStream.ReadAsync(data, length, cancellationToken);
 
-            if (readLength < fieldLength)
+            if (readLength.TotalByteCount < fieldLength.TotalByteCount)
             {
-                throw new EndOfStreamException();
-            }
+				if (InputStream.IsAtLimit)
+				{
+					throw new EndOfStreamException("BoundedStream Limit reached");
+				}
+				throw new EndOfStreamException();
+			}
         }
     }
 }

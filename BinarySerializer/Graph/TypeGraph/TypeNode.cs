@@ -28,7 +28,7 @@ namespace BinarySerialization.Graph.TypeGraph
                 {typeof(float), SerializedType.Float4},
                 {typeof(double), SerializedType.Float8},
                 {typeof(string), SerializedType.TerminatedString},
-                {typeof(byte[]), SerializedType.ByteArray}
+                {typeof(byte[]), SerializedType.ByteArray},
             };
 
         public static readonly Dictionary<SerializedType, object> SerializedTypeDefault =
@@ -395,6 +395,11 @@ namespace BinarySerialization.Graph.TypeGraph
                     serializedType = SerializedType.SizedString;
                 }
             }
+			else if (FieldBitLengthBindings != null)
+			{
+				serializedType = SerializedType.BitArray;
+			}
+
 
             return serializedType;
         }

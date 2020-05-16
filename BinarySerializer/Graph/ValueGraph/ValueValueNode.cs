@@ -216,7 +216,16 @@ namespace BinarySerialization.Graph.ValueGraph
                     writer.Write(data, dataLength);
                     break;
                 }
-                case SerializedType.TerminatedString:
+				case SerializedType.BitArray:
+					{
+						var bytes = BitConverter.GetBytes(Convert.ToUInt64(value));
+
+						var dataLength = GetArrayLength(bytes, constLength, maxLength);
+
+						writer.Write(bytes, dataLength);
+						break;
+					}
+				case SerializedType.TerminatedString:
                 {
                     var encoding = GetFieldEncoding();
                     var data = encoding.GetBytes(value.ToString());
@@ -369,6 +378,15 @@ namespace BinarySerialization.Graph.ValueGraph
                     await writer.WriteAsync(data, dataLength, cancellationToken).ConfigureAwait(false);
                     break;
                 }
+				case SerializedType.BitArray:
+				{
+						var bytes = BitConverter.GetBytes(Convert.ToUInt64(value));
+
+						var dataLength = GetArrayLength(bytes, constLength, maxLength);
+
+						await writer.WriteAsync(bytes, dataLength, cancellationToken).ConfigureAwait(false);
+						break;
+				}
                 case SerializedType.TerminatedString:
                 {
                     var data = GetFieldEncoding().GetBytes(value.ToString());
@@ -464,7 +482,14 @@ namespace BinarySerialization.Graph.ValueGraph
 					value = bytes;
 					break;
                 }
-                case SerializedType.TerminatedString:
+				case SerializedType.BitArray:
+					{
+						var buffer = reader.ReadBytes((int)effectiveLengthValue.TotalByteCount);
+						Array.Resize(ref buffer, sizeof(ulong));
+						value = BitConverter.ToUInt64(buffer, 0);
+						break;
+					}
+				case SerializedType.TerminatedString:
                 {
                     var data = ReadTerminated(reader, effectiveLengthValue, TypeNode.StringTerminator);
                     value = GetFieldEncoding().GetString(data, 0, data.Length);
@@ -537,7 +562,15 @@ namespace BinarySerialization.Graph.ValueGraph
                         .ConfigureAwait(false);
                     break;
                 }
-                case SerializedType.TerminatedString:
+				case SerializedType.BitArray:
+				{
+					var buffer = await reader.ReadBytesAsync((int)effectiveLengthValue.TotalByteCount, cancellationToken)
+						.ConfigureAwait(false);
+						Array.Resize(ref buffer, sizeof(ulong));
+						value = BitConverter.ToUInt64(buffer, 0);
+					break;
+				}
+				case SerializedType.TerminatedString:
                 {
                     var data = await ReadTerminatedAsync(reader, (int) effectiveLengthValue.ByteCount, TypeNode.StringTerminator,
                             cancellationToken)

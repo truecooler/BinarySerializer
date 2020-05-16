@@ -119,16 +119,7 @@ namespace BinarySerialization.Graph.ValueGraph
             {
                 GenerateChildren();
                 ThrowIfUnordered();
-
-                try
-                {
-                    await ObjectDeserializeOverrideAsync(stream, eventShuttle, cancellationToken).ConfigureAwait(false);
-                }
-                catch (EndOfStreamException)
-                {
-                    // this is ok but we can't consider this object fully formed.
-                    _valueType = null;
-                }
+                await ObjectDeserializeOverrideAsync(stream, eventShuttle, cancellationToken).ConfigureAwait(false);
             }
 
             await SkipPaddingAsync(stream, cancellationToken).ConfigureAwait(false);
