@@ -187,9 +187,9 @@ namespace BinarySerialization
             {
 				if (InputStream.IsAtLimit)
 				{
-					throw new EndOfStreamException("BoundedStream Limit reached");
+					throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
 				}
-                throw new EndOfStreamException();
+                throw new EndOfStreamException("You are about to read beyond underlyning stream");
             }
         }
 
@@ -202,9 +202,9 @@ namespace BinarySerialization
             {
 				if (InputStream.IsAtLimit)
 				{
-					throw new EndOfStreamException("BoundedStream Limit reached");
+					throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
 				}
-				throw new EndOfStreamException();
+				throw new EndOfStreamException("You are about to read beyond underlyning stream");
 			}
         }
     }

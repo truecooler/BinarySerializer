@@ -152,28 +152,28 @@ namespace BinarySerialization.Test
 
         protected T Deserialize<T>(Stream stream, object context = null)
         {
-//#if TESTASYNC
-//            var task = Serializer.DeserializeAsync<T>(stream, context);
-//            task.ConfigureAwait(false);
-//            task.Wait();
-//            return task.Result;
-//#else
+#if TESTASYNC
+			var task = Serializer.DeserializeAsync<T>(stream, context);
+			task.ConfigureAwait(false);
+			task.Wait();
+			return task.Result;
+#else
             return Serializer.Deserialize<T>(stream, context);
-//#endif
-        }
+#endif
+		}
 
-        protected void Serialize(Stream stream, object o, object context = null)
+		protected void Serialize(Stream stream, object o, object context = null)
         {
-//#if TESTASYNC
-//            var task = Serializer.SerializeAsync(stream, o, context);
-//            task.ConfigureAwait(false);
-//            task.Wait();
-//#else
-            Serializer.Serialize(stream, o, context);
-//#endif
-        }
+#if TESTASYNC
+			var task = Serializer.SerializeAsync(stream, o, context);
+			task.ConfigureAwait(false);
+			task.Wait();
+#else
+			Serializer.Serialize(stream, o, context);
+#endif
+		}
 
-        protected void SerializeBe(Stream stream, object o)
+		protected void SerializeBe(Stream stream, object o)
         {
 #if TESTASYNC
             var task = SerializerBe.SerializeAsync(stream, o);
