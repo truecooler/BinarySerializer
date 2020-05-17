@@ -15,15 +15,15 @@ namespace BinarySerialization.Test.Issues.Issue33
             {
                 0xFE, 0x31, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x02, Convert.ToByte('U'), Convert.ToByte('n'), Convert.ToByte('k'), Convert.ToByte('n'),
-                Convert.ToByte('o'), Convert.ToByte('w'), Convert.ToByte('n'), 0x00
+                0x02, Convert.ToByte('E'), Convert.ToByte('m'), Convert.ToByte('p'), Convert.ToByte('t'),
+                Convert.ToByte('y'), 0x00
             };
             var expected = new Bin3Data
             {
                 BinType = 254,
                 Ident = "1",
                 Occupancy = BinOccupancy.Full,
-                OccupancyString = BinOccupancy.Unknown
+                OccupancyString = BinOccupancy.Empty
             };
             
             using (var stream = new MemoryStream())
