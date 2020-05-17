@@ -183,12 +183,12 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = InputStream.Read(data, length);
 
-            if (readLength.TotalByteCount < fieldLength.TotalByteCount)
+            if (readLength == 0/*.TotalByteCount < fieldLength.TotalByteCount*/)
             {
-				if (InputStream.IsAtLimit)
-				{
-					throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
-				}
+				//if (InputStream.IsAtLimit)
+				//{
+				//	throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
+				//}
                 throw new EndOfStreamException("You are about to read beyond underlyning stream");
             }
         }
@@ -198,12 +198,12 @@ namespace BinarySerialization
             var length = fieldLength ?? data.Length;
             var readLength = await InputStream.ReadAsync(data, length, cancellationToken);
 
-            if (readLength.TotalByteCount < fieldLength.TotalByteCount)
+            if (readLength == 0/*.TotalByteCount < fieldLength.TotalByteCount*/)
             {
-				if (InputStream.IsAtLimit)
-				{
-					throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
-				}
+				//if (InputStream.IsAtLimit)
+				//{
+				//	throw new EndOfStreamException("You are about to read beyoud field that max size limited by FieldLength");
+				//}
 				throw new EndOfStreamException("You are about to read beyond underlyning stream");
 			}
         }

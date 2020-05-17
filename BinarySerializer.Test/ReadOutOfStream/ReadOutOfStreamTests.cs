@@ -69,16 +69,23 @@ namespace BinarySerialization.Test.ReadOutOfStream
 			Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomSizedByteArrayClass>(_memoryStream));
 		}
 
-		[Fact]
-		public void DeserializeBeyondBitLengthConstrainedField_ShouldThrowEndOfStreamException()
+		public class A
 		{
-			//var obj = new CustomBitConstrainedFieldClass() { Field = new CustomBitLengthConstrainedClass() { A = 1, B = 2, C = 3 } };
-			var obj = new CustomBitLengthConstrainedClass() { A = 1, B = 2, C = 3 };
-
-			_serializer.Serialize(_memoryStream, obj);
-
-			_serializer.Deserialize<CustomBitConstrainedFieldClass>(_memoryStream);
-			//Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomBitConstrainedFieldClass>(_memoryStream));
+			public CustomBitConstrainedFieldClass Field;
 		}
+
+		//[Fact]
+		//public void DeserializeBeyondBitLengthConstrainedField_ShouldThrowEndOfStreamException()
+		//{
+		//	//var obj = new CustomBitConstrainedFieldClass() { Field = new CustomBitLengthConstrainedClass() { A = 1, B = 2, C = 3 } };
+		//	var obj = new CustomBitLengthConstrainedClass() { A = int.MaxValue, B = 2, C = int.MaxValue };
+
+		//	_serializer.Serialize(_memoryStream, obj);
+
+		//	_memoryStream.Position = 0;
+
+		//	_serializer.Deserialize<CustomBitConstrainedFieldClass>(_memoryStream);
+		//	//Assert.Throws<EndOfStreamException>(() => _serializer.Deserialize<CustomBitConstrainedFieldClass>(_memoryStream));
+		//}
 	}
 }

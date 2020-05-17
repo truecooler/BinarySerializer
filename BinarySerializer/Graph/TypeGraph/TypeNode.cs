@@ -395,13 +395,13 @@ namespace BinarySerialization.Graph.TypeGraph
                     serializedType = SerializedType.SizedString;
                 }
             }
-			else if (FieldBitLengthBindings != null)
-			{
-				serializedType = SerializedType.BitArray;
-			}
+			//else if (FieldBitLengthBindings != null)
+			//{
+			//	serializedType = SerializedType.BitArray;
+			//}
 
 
-            return serializedType;
+			return serializedType;
         }
 
         public static object GetDefaultValue(SerializedType serializedType)

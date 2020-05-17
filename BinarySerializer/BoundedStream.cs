@@ -554,7 +554,12 @@ namespace BinarySerialization
 
         protected virtual int ReadByteAligned(byte[] buffer, int length)
         {
-            return Source.Read(buffer, 0, length);
+			var bytesRead = Source.Read(buffer, 0, length);
+			if (bytesRead < length)
+			{
+				//throw new EndOfStreamException("You are tried to read beoynd end of underlyning stream");
+			}
+			return bytesRead;
         }
 
         protected virtual Task<int> ReadByteAlignedAsync(byte[] buffer, int length, CancellationToken cancellationToken)
