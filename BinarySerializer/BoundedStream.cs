@@ -557,14 +557,19 @@ namespace BinarySerialization
 			var bytesRead = Source.Read(buffer, 0, length);
 			if (bytesRead < length)
 			{
-				//throw new EndOfStreamException("You are tried to read beoynd end of underlyning stream");
+				throw new EndOfStreamException("You are tried to read beoynd end of underlyning stream");
 			}
 			return bytesRead;
         }
 
-        protected virtual Task<int> ReadByteAlignedAsync(byte[] buffer, int length, CancellationToken cancellationToken)
+        protected virtual async Task<int> ReadByteAlignedAsync(byte[] buffer, int length, CancellationToken cancellationToken)
         {
-            return Source.ReadAsync(buffer, 0, length, cancellationToken);
+			var bytesRead = await Source.ReadAsync(buffer, 0, length, cancellationToken);
+			if (bytesRead < length)
+			{
+				throw new EndOfStreamException("You are tried to read beoynd end of underlyning stream");
+			}
+			return bytesRead;
         }
 
         private int ReadBits(int count, out byte value)

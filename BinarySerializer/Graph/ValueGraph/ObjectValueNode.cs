@@ -203,7 +203,9 @@ namespace BinarySerialization.Graph.ValueGraph
 
             var lazyContext = CreateLazySerializationContext();
 
-            foreach (var child in GetSerializableChildren())
+			var serializableChildern = GetSerializableChildren();
+
+			foreach (var child in serializableChildern)
             {
                 EmitBeginDeserialization(stream, child, lazyContext, eventShuttle);
 
